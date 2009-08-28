@@ -1,0 +1,9 @@
+module fm.last.hadoop.io.records {
+
+  class RowColumn {
+    ustring rowKey;
+    buffer superColumnName;
+    buffer columnName;
+  }
+
+}

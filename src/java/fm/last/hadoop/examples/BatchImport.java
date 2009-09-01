@@ -2,9 +2,9 @@ package fm.last.hadoop.examples;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
@@ -19,11 +19,13 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.record.Buffer;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 import fm.last.hadoop.io.records.RowColumn;
 import fm.last.hadoop.mapred.CassandraOutputFormat;
 
-public class BatchImport {
+public class BatchImport extends Configured implements Tool {
 
   /**
    * The input line should be in format: [rowkey][tab][columnname][tab][value][\n]
@@ -82,10 +84,11 @@ public class BatchImport {
     CassandraOutputFormat.forceFlush(keyspace, cfName, storageConf.toString());
   }
 
-  public static void main(String[] args) throws URISyntaxException, IOException {
+  @Override
+  public int run(String[] args) throws Exception {
     if (args.length < 4) {
       System.out.println("args <inputdir> <storageconfuri> <keyspace> <columnfamily>");
-      return;
+      return -1;
     }
 
     Path inputDir = new Path(args[0]);
@@ -93,8 +96,12 @@ public class BatchImport {
     String keyspace = args[2];
     String cfName = args[3];
 
-    BatchImport batchImport = new BatchImport();
-    batchImport.start(inputDir, storageConf, keyspace, cfName);
+    start(inputDir, storageConf, keyspace, cfName);
+    return 0;
   }
 
+  public static void main(String[] args) throws Exception {
+    ToolRunner.run(new BatchImport(), args);
+  }
+  
 }

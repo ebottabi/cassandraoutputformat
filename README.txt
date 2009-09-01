@@ -32,11 +32,15 @@ Then run you job. Afterwards you need to call CassandraOutputFormat.forceFlush
 to make sure the data is properly flushed.
 
 
+Notes
+-----
+* Writing to supercolumns is not tested
+* The jar created by the build file is to be used on a Hadoop cluster and as such
+  it contains all the jars in lib.
 
 Troubleshooting
 ---------------
 * Make sure you have the same cassandra.jar in the Hadoop program as on the 
   Cassandra cluster to avoid strange RMI errors.
-* Writing to supercolumns is not tested
 * Make sure no ghost processes are left behind, sometimes the Cassandra daemons
   don't shut down properly

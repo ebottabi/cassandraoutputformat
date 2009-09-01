@@ -43,8 +43,9 @@ public class CassandraClient {
    * 
    * @param rowKey Row key of the data
    * @param columnFamily Column family with data to send
+   * @throws IOException 
    */
-  public void sendColumnFamily(String rowKey, ColumnFamily columnFamily) {
+  public void sendColumnFamily(String rowKey, ColumnFamily columnFamily) throws IOException {
     List<ColumnFamily> columnFamilies = new LinkedList<ColumnFamily>();
     columnFamilies.add(columnFamily);
 
@@ -64,8 +65,9 @@ public class CassandraClient {
    * @param cfName Column family name
    * @param columnFamiles Columns to write to the column family
    * @return The message to send
+   * @throws IOException 
    */
-  protected Message createMessage(String keyspace, String key, String cfName, List<ColumnFamily> columnFamiles) {
+  protected Message createMessage(String keyspace, String key, String cfName, List<ColumnFamily> columnFamiles) throws IOException {
     /* Get the first column family from list, this is just to get past validation */
     ColumnFamily baseColumnFamily = new ColumnFamily(cfName, "Standard", DatabaseDescriptor.getComparator(keyspace,
         cfName), DatabaseDescriptor.getSubComparator(keyspace, cfName));
@@ -73,27 +75,20 @@ public class CassandraClient {
 
     for (ColumnFamily cf : columnFamiles) {
       bufOut.reset();
-      try {
-        ColumnFamily.serializer().serializeWithIndexes(cf, bufOut);
-        byte[] data = new byte[bufOut.getLength()];
-        System.arraycopy(bufOut.getData(), 0, data, 0, bufOut.getLength());
+      ColumnFamily.serializer().serializeWithIndexes(cf, bufOut);
+      byte[] data = new byte[bufOut.getLength()];
+      System.arraycopy(bufOut.getData(), 0, data, 0, bufOut.getLength());
 
-        Column column = new Column(cf.name().getBytes("UTF-8"), data, 0, false);
-        baseColumnFamily.addColumn(column);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      Column column = new Column(cf.name().getBytes("UTF-8"), data, 0, false);
+      baseColumnFamily.addColumn(column);
     }
+
+    
     RowMutation rm = new RowMutation(keyspace, StorageService.getPartitioner().decorateKey(key));
     rm.add(baseColumnFamily);
 
-    Message message;
-    try {
-      /* Make message */
-      message = rm.makeRowMutationMessage(StorageService.binaryVerbHandler_);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    /* Make message */
+    Message message = rm.makeRowMutationMessage(StorageService.binaryVerbHandler_);
 
     return message;
   }

@@ -1,4 +1,4 @@
-package fm.last.hadoop.labs.cassandra;
+package fm.last.hadoop.mapred;
 
 import java.io.IOException;
 

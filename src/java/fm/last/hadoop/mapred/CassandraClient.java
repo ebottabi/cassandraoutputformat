@@ -1,4 +1,4 @@
-package fm.last.hadoop.labs.cassandra;
+package fm.last.hadoop.mapred;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -51,7 +51,7 @@ public class CassandraClient {
 
     /* Get serialized message to send to cluster */
     Message message = createMessage(keyspace, rowKey, cfName, columnFamilies);
-    for (EndPoint endpoint : StorageService.instance().getNStorageEndPoint(rowKey)) {
+    for (EndPoint endpoint : StorageService.instance().getReadStorageEndPoints(rowKey)) {
       /* Send message to end point */
       MessagingService.getMessagingInstance().sendOneWay(message, endpoint);
     }

@@ -23,9 +23,8 @@ import org.apache.cassandra.tools.NodeProbe;
 import org.apache.log4j.Logger;
 
 /**
- * Contains the methods that do the actuall communication
- * and management of the Cassandra cluster in order to do
- * the bulk loads.
+ * Contains the methods that do the actuall communication and management of the Cassandra cluster in order to do the
+ * bulk loads.
  */
 public class CassandraClient {
 
@@ -67,15 +66,10 @@ public class CassandraClient {
    * @return The message to send
    */
   protected Message createMessage(String keyspace, String key, String cfName, List<ColumnFamily> columnFamiles) {
-    ColumnFamily baseColumnFamily;
-    DataOutputBuffer bufOut = new org.apache.cassandra.io.DataOutputBuffer();
-    RowMutation rm;
-    Message message;
-    Column column;
-
     /* Get the first column family from list, this is just to get past validation */
-    baseColumnFamily = new ColumnFamily(cfName, "Standard", DatabaseDescriptor.getComparator(keyspace, cfName),
-        DatabaseDescriptor.getSubComparator(keyspace, cfName));
+    ColumnFamily baseColumnFamily = new ColumnFamily(cfName, "Standard", DatabaseDescriptor.getComparator(keyspace,
+        cfName), DatabaseDescriptor.getSubComparator(keyspace, cfName));
+    DataOutputBuffer bufOut = new org.apache.cassandra.io.DataOutputBuffer();
 
     for (ColumnFamily cf : columnFamiles) {
       bufOut.reset();
@@ -84,15 +78,16 @@ public class CassandraClient {
         byte[] data = new byte[bufOut.getLength()];
         System.arraycopy(bufOut.getData(), 0, data, 0, bufOut.getLength());
 
-        column = new Column(cf.name().getBytes("UTF-8"), data, 0, false);
+        Column column = new Column(cf.name().getBytes("UTF-8"), data, 0, false);
         baseColumnFamily.addColumn(column);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
-    rm = new RowMutation(keyspace, StorageService.getPartitioner().decorateKey(key));
+    RowMutation rm = new RowMutation(keyspace, StorageService.getPartitioner().decorateKey(key));
     rm.add(baseColumnFamily);
 
+    Message message;
     try {
       /* Make message */
       message = rm.makeRowMutationMessage(StorageService.binaryVerbHandler_);

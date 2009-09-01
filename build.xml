@@ -8,7 +8,6 @@
 	<property name="src" value="${basedir}/src" />
 	<property name="src.java" value="${src}/java" />
 	<property name="lib" value="${basedir}/lib" />
-	<property name="debuglevel" value="source, lines, vars" />
 
 	<path id="classpath">
 		<fileset dir="${lib}">
@@ -27,7 +26,7 @@
 	</target>
 
 	<target name="build" depends="init">
-		<javac debug="true" debuglevel="${debuglevel}" destdir="${build.classes}">
+		<javac debug="true" destdir="${build.classes}">
 			<src path="${src.java}" />
 			<classpath refid="classpath" />
 		</javac>

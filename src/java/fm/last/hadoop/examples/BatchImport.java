@@ -37,6 +37,11 @@ public class BatchImport {
       throws IOException {
 
       String[] parts = split.split(line.toString());
+      if(parts.length < 3) {
+        reporter.incrCounter("error", "invalidline", 1);
+        return;
+      }
+      
       output.collect(new RowColumn(parts[0], new Buffer(), new Buffer(parts[1].getBytes("UTF-8"))), new BytesWritable(
           parts[2].getBytes("UTF-8")));
     }

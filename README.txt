@@ -43,4 +43,4 @@ Troubleshooting
 * Make sure you have the same cassandra.jar in the Hadoop program as on the 
   Cassandra cluster to avoid strange RMI errors.
 * Make sure no ghost processes are left behind, sometimes the Cassandra daemons
-  don't shut down properly
+  don't shut down properly 

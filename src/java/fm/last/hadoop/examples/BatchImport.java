@@ -60,7 +60,7 @@ public class BatchImport extends Configured implements Tool {
    * @throws IOException 
    */
   public void start(Path inputDir, URI storageConf, String keyspace, String cfName) throws IOException {
-    JobConf conf = new JobConf(BatchImport.class);
+    JobConf conf = new JobConf(getConf(), BatchImport.class);
 
     DistributedCache.addCacheFile(storageConf, conf);
 

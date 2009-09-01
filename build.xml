@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build" name="cassandraoutputformat">
+
+	<property name="base" value="." />
+	<property name="build" value="${basedir}/build" />
+	<property name="build.classes" value="${build}/classes" />
+	<property name="build.dist" value="${build}/dist" />
+	<property name="src" value="${basedir}/src" />
+	<property name="src.java" value="${src}/java" />
+	<property name="lib" value="${basedir}/lib" />
+	<property name="debuglevel" value="source, lines, vars" />
+
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="${build}" />
+	</target>
+
+	<target name="init">
+		<mkdir dir="${build}" />
+		<mkdir dir="${build.classes}" />
+		<mkdir dir="${build.dist}" />
+	</target>
+
+	<target name="build" depends="init">
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${build.classes}">
+			<src path="${src.java}" />
+			<classpath refid="classpath" />
+		</javac>
+
+		<jar jarfile="${build.dist}/${ant.project.name}.jar">
+			<manifest>
+				<attribute name="Main-Class" value="fm.last.hadoop.examples.Launcher" />
+			</manifest>
+
+			<fileset dir="${build.classes}">
+				<exclude name="**/*Test.class" />
+			</fileset>
+
+			<zipfileset dir="${lib}" prefix="lib">
+				<include name="**/*.jar" />
+			</zipfileset>
+		</jar>
+	</target>
+
+</project>

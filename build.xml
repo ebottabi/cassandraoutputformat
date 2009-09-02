@@ -39,10 +39,11 @@
 			<fileset dir="${build.classes}">
 				<exclude name="**/*Test.class" />
 			</fileset>
-
+<!--
 			<zipfileset dir="${lib}" prefix="lib">
 				<include name="**/*.jar" />
 			</zipfileset>
+-->
 		</jar>
 	</target>
 

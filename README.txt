@@ -4,8 +4,6 @@ Written by Johan Oskarsson, heavily based on code and research by
 Chris Goffinet from Digg:
 http://github.com/lenn0x/Cassandra-Hadoop-BMT/tree/master
 
-*still very much alpha, basically uploading so i have somewhere to keep it*
-
 What does it do?
 ----------------
 The CassandraOutputFormat is a way to insert data into Cassandra from a
@@ -36,11 +34,15 @@ Notes
 -----
 * Writing to supercolumns is not tested
 * The jar created by the build file is to be used on a Hadoop cluster and as such
-  it contains all the jars in lib.
+  it contains all the jars in lib. If you will include it in your program then
+  don't include the jars in the cassandraoutputformat.jar but in your file instead.
 
 Troubleshooting
 ---------------
 * Make sure you have the same cassandra.jar in the Hadoop program as on the 
   Cassandra cluster to avoid strange RMI errors.
 * Make sure no ghost processes are left behind, sometimes the Cassandra daemons
-  don't shut down properly 
+  don't shut down properly
+* If you run into out of memory errors you can tweak BinaryMemtableSizeInMB and
+  FlushMaxThreads on the Cassandra cluster. You can also reduce the number 
+  of reducers on the Hadoop side.
